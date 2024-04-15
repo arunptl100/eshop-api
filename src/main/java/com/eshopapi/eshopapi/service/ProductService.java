@@ -2,6 +2,7 @@ package com.eshopapi.eshopapi.service;
 
 import com.eshopapi.eshopapi.exception.InvalidProductLabelException;
 import com.eshopapi.eshopapi.exception.ProductNameAlreadyExistsException;
+import com.eshopapi.eshopapi.exception.ProductNotFoundException;
 import com.eshopapi.eshopapi.model.Product;
 import com.eshopapi.eshopapi.respository.ProductRepository;
 import java.util.List;
@@ -45,10 +46,14 @@ public class ProductService {
   public Product getProductById(int productId) {
     return productRepository
         .findById(productId)
-        .orElseThrow(() -> new RuntimeException("Product not found"));
+        .orElseThrow(
+            () -> new ProductNotFoundException("Product with ID " + productId + " not found."));
   }
 
   public void deleteProduct(int productId) {
+    if (!productRepository.existsById(productId)) {
+      throw new ProductNotFoundException("Product with ID " + productId + " not found.");
+    }
     productRepository.deleteById(productId);
   }
 }

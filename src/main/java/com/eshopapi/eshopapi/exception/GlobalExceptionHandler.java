@@ -108,15 +108,15 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableExceptions(
-          HttpMessageNotReadableException ex, WebRequest request) {
+      HttpMessageNotReadableException ex, WebRequest request) {
 
     // Prepare the error response
     ErrorResponse errorResponse =
-            new ErrorResponse(
-                    HttpStatus.BAD_REQUEST.value(),
-                    "Parse Error",
-                    ex.getMessage(),
-                    request.getDescription(false));
+        new ErrorResponse(
+            HttpStatus.BAD_REQUEST.value(),
+            "Parse Error",
+            ex.getMessage(),
+            request.getDescription(false));
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 }

@@ -15,8 +15,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -24,6 +28,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.springframework.orm.jpa.JpaSystemException;
 
 @Entity
@@ -40,9 +45,13 @@ public class Product {
 
   @Column(length = 200) // db level validation on size of name
   @Size(max = 200, message = "Product name must not exceed 200 characters")
+  @NotEmpty
   private String name;
 
-  private Double price;
+  @NotNull
+  @Digits(integer = 10, fraction = 2)
+  @Convert(converter = BigDecimalConverter.class)
+  private BigDecimal price;
 
   @Column(name = "added_at", updatable = false)
   private String addedAt;
@@ -82,6 +91,25 @@ public class Product {
       } catch (IOException e) {
         throw new JsonConversionException("Failed to convert JSON string to list.", e);
       }
+    }
+  }
+
+  @Converter(autoApply = true)
+  public static class BigDecimalConverter implements AttributeConverter<BigDecimal, String> {
+    @Override
+    public String convertToDatabaseColumn(BigDecimal attribute) {
+      if (attribute != null) {
+        return attribute.toPlainString();
+      }
+      return null;
+    }
+
+    @Override
+    public BigDecimal convertToEntityAttribute(String dbData) {
+      if (dbData != null) {
+        return new BigDecimal(dbData);
+      }
+      return null;
     }
   }
 }

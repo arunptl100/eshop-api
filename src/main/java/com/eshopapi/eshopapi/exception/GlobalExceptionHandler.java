@@ -1,17 +1,18 @@
 package com.eshopapi.eshopapi.exception;
 
 import com.eshopapi.eshopapi.dto.ErrorResponse;
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -21,7 +22,6 @@ public class GlobalExceptionHandler {
       JsonConversionException ex, WebRequest request) {
     ErrorResponse errorResponse =
         new ErrorResponse(
-            LocalDateTime.now(),
             HttpStatus.INTERNAL_SERVER_ERROR.value(),
             "JSON Conversion Error",
             ex.getMessage(),
@@ -34,7 +34,6 @@ public class GlobalExceptionHandler {
       InvalidProductLabelException ex, WebRequest request) {
     ErrorResponse errorResponse =
         new ErrorResponse(
-            LocalDateTime.now(),
             HttpStatus.BAD_REQUEST.value(),
             "Label not valid",
             ex.getMessage(),
@@ -47,7 +46,6 @@ public class GlobalExceptionHandler {
       ProductNameAlreadyExistsException ex, WebRequest request) {
     ErrorResponse errorResponse =
         new ErrorResponse(
-            LocalDateTime.now(),
             HttpStatus.BAD_REQUEST.value(),
             "Product name already exists",
             ex.getMessage(),
@@ -60,12 +58,23 @@ public class GlobalExceptionHandler {
       ProductNotFoundException ex, WebRequest request) {
     ErrorResponse errorResponse =
         new ErrorResponse(
-            LocalDateTime.now(),
             HttpStatus.NOT_FOUND.value(),
             "Product could not be found",
             ex.getMessage(),
             request.getDescription(false));
     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
+      MethodArgumentTypeMismatchException ex, WebRequest request) {
+    ErrorResponse errorResponse =
+        new ErrorResponse(
+            HttpStatus.BAD_REQUEST.value(),
+            "Bad argument",
+            ex.getMessage(),
+            request.getDescription(false));
+    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -90,11 +99,24 @@ public class GlobalExceptionHandler {
     // Prepare the error response
     ErrorResponse errorResponse =
         new ErrorResponse(
-            LocalDateTime.now(),
             HttpStatus.BAD_REQUEST.value(),
             "Validation Error",
             detailedMessage,
             request.getDescription(false));
+    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableExceptions(
+          HttpMessageNotReadableException ex, WebRequest request) {
+
+    // Prepare the error response
+    ErrorResponse errorResponse =
+            new ErrorResponse(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Parse Error",
+                    ex.getMessage(),
+                    request.getDescription(false));
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 }

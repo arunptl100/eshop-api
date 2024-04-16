@@ -305,4 +305,27 @@ class POSTProductControllerIT {
         .andExpect(status().isBadRequest())
         .andExpect(content().string(expectedResponse));
   }
+
+  /*Test that calls POST "products" but the price is -ve*/
+  @Test
+  public void testAddProductPriceNegative() throws Exception {
+    final String request =
+        """
+                  {
+                      "name": "Cheap and cheerful lager beer",
+                      "price": -420.7,
+                      "labels": [
+                          "drink"
+                      ]
+                  }""";
+    final String expectedResponse =
+        "{\"status\":400,\"error\":\"Validation Error\",\"message\":\"price: must be greater than 0\",\"path\":\"uri=/products\"}";
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.post("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string(expectedResponse));
+  }
 }

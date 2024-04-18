@@ -3,11 +3,14 @@ package com.eshopapi.eshopapi.service;
 import com.eshopapi.eshopapi.exception.InvalidProductLabelException;
 import com.eshopapi.eshopapi.exception.ProductNameAlreadyExistsException;
 import com.eshopapi.eshopapi.exception.ProductNotFoundException;
+import com.eshopapi.eshopapi.model.CartItem;
 import com.eshopapi.eshopapi.model.Product;
-import com.eshopapi.eshopapi.respository.ProductRepository;
+import com.eshopapi.eshopapi.repository.CartItemRepository;
+import com.eshopapi.eshopapi.repository.ProductRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductService {
@@ -29,6 +32,9 @@ public class ProductService {
 
   @Autowired private ProductRepository productRepository;
 
+  @Autowired private CartItemRepository cartItemRepository;
+
+  @Transactional
   public Product saveProduct(Product product) {
     if (product.getLabels().stream().anyMatch(label -> !ProductLabel.isValidLabel(label))) {
       throw new InvalidProductLabelException("Label is not valid");
@@ -43,6 +49,7 @@ public class ProductService {
     return productRepository.findAll();
   }
 
+  @Transactional
   public Product getProductById(int productId) {
     return productRepository
         .findById(productId)
@@ -50,10 +57,14 @@ public class ProductService {
             () -> new ProductNotFoundException("Product with ID " + productId + " not found."));
   }
 
+  @Transactional
   public void deleteProduct(int productId) {
     if (!productRepository.existsById(productId)) {
       throw new ProductNotFoundException("Product with ID " + productId + " not found.");
     }
+    //  delete the product from any cart its in
+    List<CartItem> items = cartItemRepository.findByProductProductId(productId);
+    items.forEach(cartItemRepository::delete);
     productRepository.deleteById(productId);
   }
 }

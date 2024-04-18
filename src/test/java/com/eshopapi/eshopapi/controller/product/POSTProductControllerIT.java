@@ -1,4 +1,4 @@
-package com.eshopapi.eshopapi.controller;
+package com.eshopapi.eshopapi.controller.product;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,7 +46,7 @@ class POSTProductControllerIT {
             MockMvcRequestBuilders.post("/products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(request))
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(content().string(expectedResponse));
     // now retrieve the product to verify it was added to the db
     mockMvc
@@ -76,7 +76,7 @@ class POSTProductControllerIT {
             MockMvcRequestBuilders.post("/products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(request))
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(content().string(expectedResponse));
     //  Now try and add the same product again
     final String expectedErrorResponse =

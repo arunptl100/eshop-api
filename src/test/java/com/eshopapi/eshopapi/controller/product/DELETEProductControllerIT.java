@@ -1,4 +1,4 @@
-package com.eshopapi.eshopapi.controller;
+package com.eshopapi.eshopapi.controller.product;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,7 +27,7 @@ class DELETEProductControllerIT {
     final String expectedResponse = "Product 1 successfully deleted";
     mockMvc
         .perform(MockMvcRequestBuilders.delete("/products/" + productID))
-        .andExpect(status().isOk())
+        .andExpect(status().isNoContent())
         .andExpect(content().string(expectedResponse));
 
     // now try to get the product we just deleted
@@ -49,5 +49,29 @@ class DELETEProductControllerIT {
         .perform(MockMvcRequestBuilders.delete("/products/" + productID))
         .andExpect(status().isNotFound())
         .andExpect(content().string(expectedResponse));
+  }
+
+  /*Test that calls DELETE "products" on a product that is being used in a cart*/
+  @Test
+  public void testDeleteProductUsedByCart() throws Exception {
+    //  intially cart 1 contains :
+    //
+    // {"cartId":1,"products":[{"productId":1,"quantity":2},{"productId":3,"quantity":1}],"checkedOut":false}
+    //   2 units of product with id 1
+    //   after deleting product 1, we expect the cart to not have any product 1
+    final String productID = "1";
+    final String expectedResponse = "Product 1 successfully deleted";
+    mockMvc
+        .perform(MockMvcRequestBuilders.delete("/products/" + productID))
+        .andExpect(status().isNoContent())
+        .andExpect(content().string(expectedResponse));
+
+    // we expect product with ID 1 to not be in the cart anymore
+    final String expectedCartResponse =
+        "[{\"cartId\":1,\"products\":[{\"productId\":3,\"quantity\":1}],\"checkedOut\":false},{\"cartId\":2,\"products\":[{\"productId\":2,\"quantity\":3},{\"productId\":4,\"quantity\":1}],\"checkedOut\":true},{\"cartId\":3,\"products\":[{\"productId\":5,\"quantity\":1},{\"productId\":6,\"quantity\":2}],\"checkedOut\":false}]";
+    mockMvc
+        .perform(MockMvcRequestBuilders.get("/carts"))
+        .andExpect(status().isOk())
+        .andExpect(content().string(expectedCartResponse));
   }
 }

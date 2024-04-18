@@ -1,4 +1,4 @@
-package com.eshopapi.eshopapi.respository;
+package com.eshopapi.eshopapi.repository;
 
 import com.eshopapi.eshopapi.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;

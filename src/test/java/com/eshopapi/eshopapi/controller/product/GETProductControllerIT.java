@@ -1,4 +1,4 @@
-package com.eshopapi.eshopapi.controller;
+package com.eshopapi.eshopapi.controller.product;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

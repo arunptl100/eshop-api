@@ -5,6 +5,7 @@ import com.eshopapi.eshopapi.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +21,8 @@ public class ProductController {
   @Autowired private ProductService productService;
 
   @PostMapping
-  public Product addProduct(@Valid @RequestBody Product product) {
-    return productService.saveProduct(product);
+  public ResponseEntity<Product> addProduct(@Valid @RequestBody Product product) {
+    return new ResponseEntity<>(productService.saveProduct(product), HttpStatus.CREATED);
   }
 
   @GetMapping
@@ -37,6 +38,7 @@ public class ProductController {
   @DeleteMapping("/{id}")
   public ResponseEntity<String> deleteProduct(@PathVariable("id") int productId) {
     productService.deleteProduct(productId);
-    return ResponseEntity.ok().body("Product " + productId + " successfully deleted");
+    return new ResponseEntity<>(
+        ("Product " + productId + " successfully deleted"), HttpStatus.NO_CONTENT);
   }
 }

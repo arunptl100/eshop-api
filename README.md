@@ -1,5 +1,7 @@
 TODO:
-code style
+
+test for transactional 
 dockerise
 readme setup / design / thoughts 
-error handling, error handler setup, controller advice
+    error handling, error handler setup, controller advice
+

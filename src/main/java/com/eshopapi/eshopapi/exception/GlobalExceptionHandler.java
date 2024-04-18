@@ -178,5 +178,4 @@ public class GlobalExceptionHandler {
             request.getDescription(false));
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
-  //  InvalidDataAccessApiUsageException
 }

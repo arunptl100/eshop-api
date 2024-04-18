@@ -20,16 +20,17 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.orm.jpa.JpaSystemException;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.orm.jpa.JpaSystemException;
 
 @Entity
 @Table(
@@ -39,6 +40,7 @@ import org.springframework.orm.jpa.JpaSystemException;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer productId;

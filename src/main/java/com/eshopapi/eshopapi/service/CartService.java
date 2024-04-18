@@ -10,13 +10,12 @@ import com.eshopapi.eshopapi.model.Product;
 import com.eshopapi.eshopapi.repository.CartItemRepository;
 import com.eshopapi.eshopapi.repository.CartRepository;
 import com.eshopapi.eshopapi.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CartService {

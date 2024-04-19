@@ -143,7 +143,6 @@ If you have started the containerised version, the endpoints are available at th
   - **404 NOT FOUND** : Cart could not be found
   - **404 NOT FOUND** : Product could not be found
   - **400 BAD REQUEST** : Cart already checked out
-  - 
 - **Sample Response**:
    ```  
   [
@@ -166,7 +165,6 @@ If you have started the containerised version, the endpoints are available at th
   - **200 OK** : Cart checked out and total cost added
   - **404 NOT FOUND** : Cart could not be found
   - **400 BAD REQUEST** : Cart already checked out
-  -
 - **Sample Response**:
 ```  
 {
@@ -218,5 +216,5 @@ This approach simplifies development by managing transaction boundaries automati
 ControllerAdvice has been used to centralise the management of exceptions, streamlining responses with detailed ErrorResponseDTO objects that enhance the clarity of API errors.
 
 ## Concurrency
-SQLite only supports one write transaction at a time. When multiple transactions attempt to access the database simultaneously, SQLite may lock, leading to potential SQLITE_BUSY errors. To manage this, our services utilize the @Retryable annotation to automatically retry the transaction up to three times.
+SQLite only supports one write transaction at a time. When multiple transactions attempt to access the database simultaneously, SQLite may lock, leading to potential SQLITE_BUSY errors. To manage this, the api utilises the @Retryable annotation to automatically retry the transaction up to three times.
 

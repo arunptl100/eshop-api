@@ -218,3 +218,5 @@ ControllerAdvice has been used to centralise the management of exceptions, strea
 ## Concurrency
 SQLite only supports one write transaction at a time. When multiple transactions attempt to access the database simultaneously, SQLite may lock, leading to potential SQLITE_BUSY errors. To manage this, the api utilises the @Retryable annotation to automatically retry the transaction up to three times.
 
+## Code formatting
+Spotless code formatter using googleJavaFormat has been employed to maintain consistent and clean code formatting.

@@ -23,6 +23,8 @@ docker run -p 8081:8080 eshop-api
 ```
 
 ## Eshop API Endpoints
+The following REST API endpoints have been exposed, which implement the functionality of the system:
+If you have started the containerised version, the endpoints are available at the base URL: `http://localhost:8081/`
 ### GET /products
 - **URL**: `/products` (all products)
 - **URL**: `/products/:id` (specific product with id)

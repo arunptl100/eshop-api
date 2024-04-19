@@ -9,6 +9,9 @@ import com.eshopapi.eshopapi.repository.CartItemRepository;
 import com.eshopapi.eshopapi.repository.ProductRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +37,11 @@ public class ProductService {
 
   @Autowired private CartItemRepository cartItemRepository;
 
+  @Retryable(
+      value = CannotAcquireLockException.class,
+      maxAttempts = 3,
+      backoff = @Backoff(delay = 1000) // Delay of 1000ms between retries
+      )
   @Transactional
   public Product saveProduct(Product product) {
     if (product.getLabels().stream().anyMatch(label -> !ProductLabel.isValidLabel(label))) {
@@ -57,6 +65,11 @@ public class ProductService {
             () -> new ProductNotFoundException("Product with ID " + productId + " not found."));
   }
 
+  @Retryable(
+      value = CannotAcquireLockException.class,
+      maxAttempts = 3,
+      backoff = @Backoff(delay = 1000) // Delay of 1000ms between retries
+      )
   @Transactional
   public void deleteProduct(int productId) {
     if (!productRepository.existsById(productId)) {

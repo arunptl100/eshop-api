@@ -178,4 +178,18 @@ public class GlobalExceptionHandler {
             request.getDescription(false));
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
+
+  @ExceptionHandler(RetryRequestFailedException.class)
+  public ResponseEntity<ErrorResponseDTO> handleInvalidDataAccessApiUsageExceptions(
+      RetryRequestFailedException ex, WebRequest request) {
+
+    // Prepare the error response
+    ErrorResponseDTO errorResponseDTO =
+        new ErrorResponseDTO(
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            "Request failed after retrying 3 times",
+            ex.getMessage(),
+            request.getDescription(false));
+    return new ResponseEntity<>(errorResponseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 }

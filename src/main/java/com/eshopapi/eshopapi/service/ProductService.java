@@ -3,6 +3,7 @@ package com.eshopapi.eshopapi.service;
 import com.eshopapi.eshopapi.exception.InvalidProductLabelException;
 import com.eshopapi.eshopapi.exception.ProductNameAlreadyExistsException;
 import com.eshopapi.eshopapi.exception.ProductNotFoundException;
+import com.eshopapi.eshopapi.exception.RetryRequestFailedException;
 import com.eshopapi.eshopapi.model.CartItem;
 import com.eshopapi.eshopapi.model.Product;
 import com.eshopapi.eshopapi.repository.CartItemRepository;
@@ -11,6 +12,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,5 +81,11 @@ public class ProductService {
     List<CartItem> items = cartItemRepository.findByProductProductId(productId);
     items.forEach(cartItemRepository::delete);
     productRepository.deleteById(productId);
+  }
+
+  @Recover
+  public void recover(CannotAcquireLockException e, int cartId, int productId, int quantity) {
+    throw new RetryRequestFailedException(
+        "The request on cart " + cartId + " failed after 3 retries");
   }
 }

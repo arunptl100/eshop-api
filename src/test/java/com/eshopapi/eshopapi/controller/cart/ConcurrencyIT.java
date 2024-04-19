@@ -71,7 +71,7 @@ public class ConcurrencyIT {
     MvcResult result1 = future1.get();
     MvcResult result2 = future2.get();
 
-    // Both requests should succeed a
+    // Both requests should succeed
     assertEquals(200, result1.getResponse().getStatus());
     assertEquals(200, result2.getResponse().getStatus());
   }
